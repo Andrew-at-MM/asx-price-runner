@@ -1,24 +1,32 @@
 name: Daily ETF Price Update
+
+on:
   schedule:
-    - cron: '0 7 * * *'
-  workflow_dispatch:
+    - cron: '0 7 * * *'  # Runs at 6:00 PM Melbourne time (7:00 AM UTC)
+  workflow_dispatch:      # Enables the "Run workflow" button in GitHub
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
+
       - name: Install dependencies
         run: pip install yfinance pandas
+
       - name: Run script
         run: python etf.py
+
       - name: Commit and push changes
         run: |
-          git config --global user.name "actions-user"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add etf_prices.csv
-          git commit -m "Update daily prices"
+          # The '|| exit 0' ensures the workflow doesn't fail if there are no price changes
+          git commit -m "Update daily prices" || exit 0
           git push
