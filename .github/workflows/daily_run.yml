@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: pip install yfinance pandas
       - name: Run script
-        run: python your_script_name.py
+        run: python etf.py
       - name: Commit and push changes
         run: |
           git config --global user.name "actions-user"
